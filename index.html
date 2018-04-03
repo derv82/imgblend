@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>imgBlend</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="css/imgblend.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+
+<body id="app">
+  <div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">imgBlend</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Dropdown
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="#">Action</a>
+              <a class="dropdown-item" href="#">Another action</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">Something else here</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#">Disabled</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <br/>
+
+    <div class="container-fluid">
+
+      <div class="row">
+        <!-- Canvas -->
+        <div class="col col-lg-8 col-12">
+          <canvas id="canvas" class="figure-img img-fluid rounded" width="300" height="300"></canvas>
+        </div>
+
+        <!-- Inputs -->
+        <div class="col col-lg-4 col-12">
+          <div class="input-group mb-3">
+            <input data-bind="textInput: searchTags,
+                              event: {keypress: searchKeypress},
+                              disable: isSearchLoading"
+                   type="text"
+                   class="form-control"
+                   placeholder="Tags (separated by commas)"
+                   aria-label="Search terms"
+                   aria-describedby="basic-addon2">
+            <div class="dropdown">
+              <button data-bind="style: {backgroundColor: currentColorCode()},
+                                 disable: isSearchLoading"
+                      class="btn btn-secondary dropdown-toggle"
+                      type="button"
+                      id="dropdownMenuButton"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false">
+                &nbsp;
+              </button>
+              <div class="dropdown-menu colorMenu" aria-labelledby="dropdownMenuButton">
+                <!-- ko foreach: colors -->
+                  <a data-bind="style: {backgroundColor: code},
+                                attr: {id: id},
+                                click: $parent.setColor,
+                                text: text"
+                     class="dropdown-item colorOption"
+                     href="#"></a>
+                <!-- /ko -->
+              </div>
+            </div>
+            <div class="input-group-append">
+              <button data-bind="click: search,
+                                 disable: isSearchLoading"
+                      class="btn btn-secondary"
+                      type="button">
+                Image Search
+              </button>
+            </div>
+          </div>
+          <div class="alert alert-danger" role="alert" data-bind="text: searchErrorMessage, visible: searchErrorMessage"></div>
+
+          <!-- Thumbnails -->
+          <div class="col col-12">
+            <figure class="figure" data-bind="foreach: images">
+              <img data-bind="attr: {src: thumb},
+                              click: toggle,
+                              css: {active: isActive(), loaded: isLoaded()}"
+                   src=""
+                   class="thumbnail figure-img img-fluid rounded" />
+              <img data-bind="attr: {src: large},
+                              click: toggle,
+                              css: {active: isActive(), loaded: isLoaded()},
+                              event: {load: load}"
+                   src=""
+                   class="thumbnail large" />
+            </figure>
+            <button data-bind="click: nextPage,
+                               visible: images().length > 0,
+                               disable: isSearchLoading"
+                    class="btn btn-primary">
+              Load More Images
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div> <!-- /container -->
+
+  </div> <!-- /app -->
+
+  <script src="js/vendor/jquery-3.3.1.min.js"></script>
+  <script src="js/vendor/popper.min.js"></script>
+  <script src="js/vendor/bootstrap.min.js"></script>
+  <script src="js/vendor/knockout.min.js"></script>
+  <script type="text/javascript" src="js/imgblend.js"></script>
+</body>
+
+</html>

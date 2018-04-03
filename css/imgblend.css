@@ -1,0 +1,59 @@
+:root {
+    --bg: #222;
+    --bg2: #343a40;
+    --fg: #ccc;
+}
+
+body {
+    background-color: var(--bg) !important;
+    color: var(--fg) !important;
+    text-shadow: 0.5px 0.5px #000a;
+}
+
+#canvas {
+    width: 100%;
+    height: auto;
+}
+
+.thumbnail {
+    border: solid 5px transparent;
+    cursor: pointer;
+    max-width: 80px;
+    max-height: 80px;
+}
+
+.thumbnail.active {
+    border-color: #4af;
+}
+
+.thumbnail.large {
+    visibility: hidden;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    z-index: -1;
+    border: none;
+}
+
+.dropdown-menu.colorMenu {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 80px !important;
+  min-width: 80px !important;
+}
+.colorOption {
+    text-shadow: 0 0 2px #000,
+                 0 0 1px #000,
+                 0 0 3px #000;
+    color: #fff !important;
+    padding: 6px 2px !important;
+    margin: 0 !important;
+    min-width: 80px !important;
+    min-height: 40px !important;
+    width: 80px !important;
+    height: 40px !important;
+}
