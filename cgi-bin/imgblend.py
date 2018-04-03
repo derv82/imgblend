@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import cgi, json, flickr
 
 cgi_args = {
@@ -6,18 +8,14 @@ cgi_args = {
     in cgi.parse().items()
 }
 
+method_handlers = {
+    'colors': flickr.color_list,
+    'search': flickr.search,
+}
+
 
 def get_handler(method_name):
-    method_handlers = {
-        'colors': flickr.color_list,
-        'search': flickr.search,
-        'args': return_args
-    }
     return method_handlers.get(method_name, unknown_method_error)
-
-
-def return_args(args):
-    return args
 
 
 def unknown_method_error():
@@ -35,11 +33,6 @@ except Exception as e:
         'error': str(e),
         'trace': format_exc(limit=10)
     }, indent=2)
-
-    import sys
-    sys.stderr.write(format_exc())
-    sys.stderr.write(repr(cgi_args))
-    sys.stderr.write(str(cgi_args))
 
 print('Content-Type: application/json\n\n')
 print(json_response)

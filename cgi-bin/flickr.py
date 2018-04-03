@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from flickr_api import set_keys, Walker, Photo
 from multiprocessing.pool import ThreadPool
 
