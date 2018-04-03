@@ -5,7 +5,9 @@
   <title>imgBlend</title>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="css/imgblend.css">
-  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="css/vendor/ionicons.min.css">
+  <link rel="icon" type="image/png" href="/favicon.png">
 </head>
 
 <body id="app">
@@ -55,6 +57,31 @@
         <!-- Inputs -->
         <div class="col col-lg-4 col-12">
           <div class="input-group mb-3">
+            <div class="dropdown">
+              <div class="input-group-prepend">
+                <button data-bind="style: {backgroundColor: currentColorCode()},
+                                   disable: isSearchLoading"
+                        class="btn btn-secondary dropdown-toggle colorPicker"
+                        type="button"
+                        id="dropdownMenuButton"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                  <i class="icon ion-paintbucket"></i>
+                </button>
+                <div class="dropdown-menu colorMenu" aria-labelledby="dropdownMenuButton">
+                  <!-- ko foreach: colors -->
+                  <a data-bind="style: {backgroundColor: code},
+                                  attr: {id: id},
+                                  click: $parent.setColor,
+                                  text: text"
+                     class="dropdown-item colorOption"
+                     href="#"></a>
+                  <!-- /ko -->
+                </div>
+              </div>
+            </div>
+
             <input data-bind="textInput: searchTags,
                               event: {keypress: searchKeypress},
                               disable: isSearchLoading"
@@ -63,34 +90,14 @@
                    placeholder="Tags (separated by commas)"
                    aria-label="Search terms"
                    aria-describedby="basic-addon2">
-            <div class="dropdown">
-              <button data-bind="style: {backgroundColor: currentColorCode()},
-                                 disable: isSearchLoading"
-                      class="btn btn-secondary dropdown-toggle"
-                      type="button"
-                      id="dropdownMenuButton"
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false">
-                &nbsp;
-              </button>
-              <div class="dropdown-menu colorMenu" aria-labelledby="dropdownMenuButton">
-                <!-- ko foreach: colors -->
-                  <a data-bind="style: {backgroundColor: code},
-                                attr: {id: id},
-                                click: $parent.setColor,
-                                text: text"
-                     class="dropdown-item colorOption"
-                     href="#"></a>
-                <!-- /ko -->
-              </div>
-            </div>
+
             <div class="input-group-append">
               <button data-bind="click: search,
                                  disable: isSearchLoading"
-                      class="btn btn-secondary"
+                      class="btn btn-primary"
                       type="button">
-                Image Search
+                <i class="icon ion-image"></i>
+                Search
               </button>
             </div>
           </div>
@@ -98,19 +105,29 @@
 
           <!-- Thumbnails -->
           <div class="col col-12">
-            <figure class="figure" data-bind="foreach: images">
-              <img data-bind="attr: {src: thumb},
-                              click: toggle,
-                              css: {active: isActive(), loaded: isLoaded()}"
-                   src=""
-                   class="thumbnail figure-img img-fluid rounded" />
-              <img data-bind="attr: {src: large},
-                              click: toggle,
-                              css: {active: isActive(), loaded: isLoaded()},
-                              event: {load: load}"
-                   src=""
-                   class="thumbnail large" />
-            </figure>
+            <!-- TODO: Select All/none, Shuffle, Clear -->
+            <!-- ko foreach: images -->
+              <figure class="figure">
+                <img data-bind="attr: {src: thumb},
+                                click: toggle,
+                                css: {active: isActive(), loaded: isLoaded()}"
+                     src=""
+                     class="thumbnail small figure-img img-fluid rounded" />
+
+                <span data-bind="click: function() {$parent.removeImage($data)}"
+                      class="remove">
+                  &times;
+                </span>
+
+                <img data-bind="attr: {src: large},
+                                click: toggle,
+                                css: {active: isActive(), loaded: isLoaded()},
+                                event: {load: load}"
+                     src=""
+                     class="thumbnail large" />
+              </figure>
+            <!-- /ko -->
+            <hr/>
             <button data-bind="click: nextPage,
                                visible: images().length > 0,
                                disable: isSearchLoading"

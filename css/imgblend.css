@@ -26,17 +26,42 @@ body {
     border-color: #4af;
 }
 
+.thumbnail.small:hover {
+    box-shadow: 0 0 5px #fff5;
+}
+
 .thumbnail.large {
     visibility: hidden;
-    max-width: 100% !important;
-    max-height: 100% !important;
-    width: 100% !important;
-    height: 100% !important;
+    width: 0;
+    height: 0;
+    overflow: scroll;
+    z-index: -1;
     margin: 0;
     padding: 0;
-    position: absolute;
-    z-index: -1;
     border: none;
+}
+
+figure > .remove {
+    display: none;
+    position: absolute;
+    margin-left: -28px;
+    margin-top: 3px;
+    line-height: 0.6em;
+    padding: 0 2px 2px 2px;
+    background-color: #0009;
+    border-radius: 5px;
+    font-size: 1.5em;
+}
+figure:hover > .remove {
+    cursor: pointer;
+    display: inline-block;
+}
+
+.colorPicker, .colorOption {
+    text-shadow: 0 0 2px #000,
+                 0 0 1px #000,
+                 0 0 3px #000;
+    color: #fff !important;
 }
 
 .dropdown-menu.colorMenu {
@@ -45,11 +70,8 @@ body {
   width: 80px !important;
   min-width: 80px !important;
 }
+
 .colorOption {
-    text-shadow: 0 0 2px #000,
-                 0 0 1px #000,
-                 0 0 3px #000;
-    color: #fff !important;
     padding: 6px 2px !important;
     margin: 0 !important;
     min-width: 80px !important;

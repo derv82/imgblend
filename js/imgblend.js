@@ -26,7 +26,7 @@ const Canvas = (function() {
         canvasContext.clearRect(0, 0, canvasNode.width, canvasNode.height);
 
         const activeThumbs = document.querySelectorAll('.thumbnail.large.loaded.active')
-        canvasContext.globalAlpha = 1 / activeThumbs.length;
+        canvasContext.globalAlpha = 1 / activeThumbs.length * 0.5;
         activeThumbs.forEach(imageNode => {
             canvasContext.drawImage(
                 imageNode,
@@ -46,6 +46,13 @@ function ImageBlend() {
 
     this.images = ko.observableArray([]);
     this.images.extend({ rateLimit: 100 }); // Delay up to 100ms
+
+    this.removeImage = function(selectedItem) {
+        this.images.remove(function(item) {
+            return item.thumb() === selectedItem.thumb();
+        });
+        setTimeout(Canvas.redraw, 200);
+    };
 
     this.isSearchLoading = ko.observable(false);
 
