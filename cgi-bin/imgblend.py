@@ -1,7 +1,10 @@
 #!/usr/bin/python
 
-import cgi, json, flickr
+import cgi
+import json
+import flickr
 
+# Extract arguments from query string
 cgi_args = {
     key: value[0]
     for key, value
@@ -9,8 +12,7 @@ cgi_args = {
 }
 
 method_handlers = {
-    'colors': flickr.color_list,
-    'search': flickr.search,
+    'search': flickr.search
 }
 
 

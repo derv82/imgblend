@@ -12,6 +12,7 @@ function Image(searchResult) {
 
     this.load = function() {
         thatImage.isLoaded(true);
+        thatImage.isActive(true);
         Canvas.redraw();
     };
 }
@@ -26,8 +27,8 @@ const Canvas = (function() {
         canvasContext.clearRect(0, 0, canvasNode.width, canvasNode.height);
 
         const activeThumbs = document.querySelectorAll('.thumbnail.large.loaded.active')
-        canvasContext.globalAlpha = 1 / activeThumbs.length * 0.5;
-        activeThumbs.forEach(imageNode => {
+        canvasContext.globalAlpha = 1 / activeThumbs.length * 1.2;
+        activeThumbs.forEach(function(imageNode) {
             canvasContext.drawImage(
                 imageNode,
                 0, 0, // top, left
@@ -80,7 +81,7 @@ function ImageBlend() {
         }).then(function(response) {
             that.isSearchLoading(false);
             console.log('response from search:', response);
-            response.forEach(image => {
+            response.forEach(function(image) {
                 that.images.push(new Image(image));
             });
         }).catch(function(response) {
@@ -138,11 +139,11 @@ function getJson(params) {
     return new Promise(function(resolve, reject) {
         const url = 'cgi-bin/imgblend.py?' + $.param(params)
         const request = new XMLHttpRequest();
-        request.addEventListener('error',  e => {
+        request.addEventListener('error',  function(e) {
             console.log('Error while calling ' + url, e);
             reject('Error while calling ' + url);
         });
-        request.addEventListener('load', e => {
+        request.addEventListener('load', function(e) {
             try {
                 const jsonResult = JSON.parse(request.response);
                 if (jsonResult.error && jsonResult.trace) {

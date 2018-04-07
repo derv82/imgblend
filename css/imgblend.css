@@ -20,10 +20,15 @@ body {
     cursor: pointer;
     max-width: 80px;
     max-height: 80px;
+    opacity: 0.8;
 }
 
 .thumbnail.active {
     border-color: #4af;
+}
+
+.thumbnail.loaded {
+    opacity: 1
 }
 
 .thumbnail.small:hover {
@@ -78,4 +83,28 @@ figure:hover > .remove {
     min-height: 40px !important;
     width: 80px !important;
     height: 40px !important;
+}
+
+.icon.ion-load-c:before {
+    animation: spin 2s infinite linear;
+    font-size: 2.0em;
+}
+@keyframes spin {
+    from {
+        transform:rotate(0deg);
+    }
+    to {
+        transform:rotate(360deg);
+    }
+}
+
+.imageLoader {
+    position: absolute;
+    margin-left: 15px;
+    margin-top: 10px;
+    display: block;
+    z-index: 1000;
+}
+.imageLoader.loaded {
+    display: none;
 }
