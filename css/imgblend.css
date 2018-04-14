@@ -8,6 +8,7 @@ body {
     background-color: var(--bg) !important;
     color: var(--fg) !important;
     text-shadow: 0.5px 0.5px #000a;
+    margin-bottom: 40px !important;
 }
 
 #canvas {

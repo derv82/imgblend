@@ -147,35 +147,7 @@
 
         <!-- Canvas -->
         <div class="col col-lg-8 col-12 container">
-          <!-- Save Container -->
-          <div class="container">
-            <div class="row" data-bind="visible: images().length > 0">
-
-                <!-- Width / Height-->
-                <div class="col-lg-4 offset-lg-0 col-5 offset-1">
-                  <label> Width </label>
-                  <input data-bind="value: width"
-                         text="text"
-                         class="inputWidth" />
-                </div>
-
-                <div class="col-lg-4 col-5">
-                  <label> Height </label>
-                  <input data-bind="value: height"
-                         text="text"
-                         class="inputHeight" />
-                </div>
-
-                <!-- Save-->
-                  <button data-bind="click: save"
-                          class="col-lg-4 offset-lg-0 col-10 offset-1 btn btn-success">
-                    <i class="icon ion-ios-cloud-download-outline"></i>
-                  </button>
-            </div>
-          </div> <!-- /Save container -->
-
-          <hr/>
-
+          <!-- Actual canvas -->
           <div class="col">
             <canvas data-bind="attr: {width: width(), height: height() }"
                     id="canvas"
@@ -183,6 +155,48 @@
                     width="600"
                     height="800"></canvas>
           </div>
+
+          <hr/>
+
+          <!-- Save Container -->
+          <div class="container">
+            <div class="row" data-bind="visible: images().length > 0">
+
+                <!-- Width / Height-->
+                <div class="input-group col col-lg-4 col-12">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Width</span>
+                  </div>
+                  <input data-bind="value: width"
+                         text="text"
+                         class="inputWidth form-control" />
+                  <div class="input-group-append">
+                    <span class="input-group-text">px</span>
+                  </div>
+                </div>
+
+                <div class="input-group col col-lg-4 col-12">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Height</span>
+                  </div>
+                  <input data-bind="value: height"
+                         text="text"
+                         class="inputHeight form-control" />
+                  <div class="input-group-append">
+                    <span class="input-group-text">px</span>
+                  </div>
+                </div>
+
+                <!-- Save-->
+                <div class="col col-lg-4 col-12">
+                  <button data-bind="click: save"
+                          class="col col-12 btn btn-success">
+                    <i class="icon ion-ios-cloud-download-outline"></i>
+                    Save
+                  </button>
+                </div>
+            </div>
+          </div> <!-- /Save container -->
         </div> <!-- /Canvas -->
 
       </div>
