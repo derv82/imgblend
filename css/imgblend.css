@@ -13,6 +13,7 @@ body {
 #canvas {
     width: 100%;
     height: auto;
+    box-shadow: 0 0 5px #0009;
 }
 
 .thumbnail {
@@ -20,17 +21,12 @@ body {
     cursor: pointer;
     max-width: 80px;
     max-height: 80px;
-    opacity: 0.8;
 }
 
-.thumbnail.active {
-    border-color: #4af;
+.thumbnail.small {
+    min-width: 80px;
+    min-height: 80px;
 }
-
-.thumbnail.loaded {
-    opacity: 1
-}
-
 .thumbnail.small:hover {
     box-shadow: 0 0 5px #fff5;
 }
@@ -46,20 +42,52 @@ body {
     border: none;
 }
 
-figure > .remove {
+.thumbnail.active {
+    border-color: #4af;
+}
+
+/* Thumbnail loading */
+.thumbnail {
+    opacity: 0.8;
+}
+.thumbnail.loaded {
+    opacity: 1
+}
+
+.loader {
+    display: none
+}
+.loader.loading {
+    display: block;
+    text-align: center !important;
+    margin: 10px 0 30px 0;
+}
+
+.thumbnailContainer {
+    display: inline-block;
+}
+
+.thumbnailContainer .remove {
     display: none;
+    float: right;
     position: absolute;
-    margin-left: -28px;
-    margin-top: 3px;
     line-height: 0.6em;
     padding: 0 2px 2px 2px;
     background-color: #0009;
     border-radius: 5px;
     font-size: 1.5em;
 }
-figure:hover > .remove {
+.thumbnailContainer:hover > .remove {
     cursor: pointer;
     display: inline-block;
+}
+
+.thumbnailControls {
+    margin: 10px 0;
+}
+
+.thumbnails {
+    margin: 10px 0 30px 0;
 }
 
 .colorPicker, .colorOption {
@@ -102,14 +130,14 @@ figure:hover > .remove {
     }
 }
 
-.imageLoader {
+.thumbnailLoader {
     position: absolute;
     margin-left: 15px;
     margin-top: 10px;
     display: block;
     z-index: 1000;
 }
-.imageLoader.loaded {
+.thumbnailLoader.loaded {
     display: none;
 }
 
@@ -158,4 +186,8 @@ button.colorPicker::after {
     0%{background-position:0% 82%}
     50%{background-position:100% 19%}
     100%{background-position:0% 82%}
+}
+
+.inputWidth.form-control, .inputHeight.form-control {
+    width: 80px !important;
 }

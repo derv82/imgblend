@@ -21,112 +21,170 @@
     <div class="container-fluid">
 
       <div class="row">
-        <!-- Canvas -->
-        <div class="col col-lg-8 col-12">
-          <canvas id="canvas" class="figure-img img-fluid rounded" width="300" height="300"></canvas>
-        </div>
-
         <!-- Inputs -->
         <div class="col col-lg-4 col-12">
-          <div class="input-group mb-3">
-            <div class="dropdown">
-              <div class="input-group-prepend">
-                <button data-bind="style: {
-                                     backgroundColor: currentColor().code,
-                                     borderColor: currentColor().code,
-                                   },
-                                   css: { rainbow: currentColor().rainbow },
-                                   disable: isSearchLoading"
-                        class="colorPicker btn btn-secondary dropdown-toggle"
-                        type="button"
-                        id="dropdownMenuButton"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false">
-                  <i class="icon ion-paintbucket"></i>
-                </button>
-                <div class="dropdown-menu colorMenu" aria-labelledby="dropdownMenuButton">
-                  <!-- ko foreach: colors -->
-                  <a data-bind="style: {
-                                  backgroundColor: code,
-                                  borderColor: code,
-                                },
-                                css: { rainbow: $data.rainbow },
-                                attr: {id: id},
-                                click: $parent.setColor,
-                                text: text"
-                     class="dropdown-item colorOption"
-                     href="#"></a>
-                  <!-- /ko -->
+          <div class="col">
+            <div class="input-group mb-3">
+              <div class="dropdown">
+                <div class="input-group-prepend">
+                  <button data-bind="style: {
+                                       backgroundColor: currentColor().code,
+                                       borderColor: currentColor().code,
+                                     },
+                                     css: { rainbow: currentColor().rainbow },
+                                     disable: isSearchLoading"
+                          class="colorPicker btn btn-secondary dropdown-toggle"
+                          type="button"
+                          id="dropdownMenuButton"
+                          data-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false">
+                    <i class="icon ion-paintbucket"></i>
+                  </button>
+                  <div class="dropdown-menu colorMenu" aria-labelledby="dropdownMenuButton">
+                    <!-- ko foreach: colors -->
+                    <a data-bind="style: {
+                                    backgroundColor: code,
+                                    borderColor: code,
+                                  },
+                                  css: { rainbow: $data.rainbow },
+                                  attr: {id: id},
+                                  click: $parent.setColor,
+                                  text: text"
+                       class="dropdown-item colorOption"
+                       href="#"></a>
+                    <!-- /ko -->
+                  </div>
                 </div>
+              </div>
+
+              <input data-bind="textInput: searchTags,
+                                event: {keypress: searchKeypress},
+                                disable: isSearchLoading"
+                     type="text"
+                     class="form-control"
+                     placeholder="Tags (separated by commas)"
+                     aria-label="Search terms" >
+
+              <div class="input-group-append">
+                <button data-bind="click: search,
+                                   disable: isSearchLoading"
+                        class="btn btn-primary"
+                        type="button">
+                  <i class="icon ion-search"></i>
+                </button>
+              </div>
+            </div>
+            <div class="alert alert-danger" role="alert" data-bind="text: searchErrorMessage, visible: searchErrorMessage"></div>
+          </div>
+
+          <!-- Thumbnails -->
+          <div class="thumbnails row">
+            <div data-bind="visible: images().length > 0"
+                 class="thumbnailControls col-lg-12 col-3" role="group">
+
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <!-- Load more results-->
+                <button data-bind="click: nextPage,
+                                   disable: isSearchLoading"
+                        class="btn btn-primary col-4">
+                  <i class="icon ion-plus-round"></i>
+                </button>
+
+                <!-- Select all / none -->
+                <button data-bind="click: selectAll"
+                        class="btn btn-default col-4">
+                  <i class="icon ion-android-checkbox-outline"></i>
+                </button>
+
+                <button data-bind="click: selectNone"
+                        class="btn btn-default col-4">
+                    <i class="icon ion-android-checkbox-outline-blank"></i>
+                </button>
               </div>
             </div>
 
-            <input data-bind="textInput: searchTags,
-                              event: {keypress: searchKeypress},
-                              disable: isSearchLoading"
-                   type="text"
-                   class="form-control"
-                   placeholder="Tags (separated by commas)"
-                   aria-label="Search terms"
-                   aria-describedby="basic-addon2">
-
-            <div class="input-group-append">
-              <button data-bind="click: search,
-                                 disable: isSearchLoading"
-                      class="btn btn-primary"
-                      type="button">
-                <i class="icon ion-image"></i>
-                Search
-              </button>
-            </div>
-          </div>
-          <div class="alert alert-danger" role="alert" data-bind="text: searchErrorMessage, visible: searchErrorMessage"></div>
-
-          <!-- Thumbnails -->
-          <div class="col col-12">
-            <!-- TODO: Select All/none, Shuffle, Clear -->
-            <!-- ko foreach: images -->
-              <figure class="figure">
-                <div data-bind="css: {loaded: isLoaded()}"
-                     class="imageLoader">
-                    <i class="icon ion-load-c"></i>
-                </div>
-
-                <img data-bind="attr: {src: thumb},
-                                click: toggle,
-                                css: {active: isActive(), loaded: isLoaded()}"
-                     src=""
-                     class="thumbnail small figure-img img-fluid rounded" />
-
-                <span data-bind="click: function() {$parent.removeImage($data)}"
-                      class="remove">
-                  &times;
-                </span>
-
-                <img data-bind="attr: {src: large},
-                                click: toggle,
-                                css: {active: isActive(), loaded: isLoaded()},
-                                event: {load: load}"
-                     src=""
-                     class="thumbnail large" />
-              </figure>
-            <!-- /ko -->
-
-            <div data-bind="visible: isSearchLoading">
-              <hr/>
+            <!-- Search result loader -->
+            <div data-bind="css: {loading: isSearchLoading() }"
+                 class="loader col-12">
               <i class="icon ion-load-c"></i>
             </div>
 
-            <hr/>
-            <button data-bind="click: nextPage,
-                               visible: images().length > 0,
-                               disable: isSearchLoading"
-                    class="btn btn-primary">
-              Load More Images
-            </button>
+            <div class="col-12">
+              <div class="row">
+                <!-- ko foreach: images -->
+                  <div class="thumbnailContainer col-lg-3 col-4">
+                    <div data-bind="css: {loaded: isLoaded()}"
+                         class="thumbnailLoader">
+                        <i class="icon ion-load-c"></i>
+                    </div>
+
+                    <span data-bind="click: function() {$parent.removeImage($data)}"
+                          class="remove">
+                      &times;
+                    </span>
+
+                    <img data-bind="attr: {src: thumb},
+                                    click: toggle,
+                                    css: {active: isActive(), loaded: isLoaded()}"
+                         src=""
+                         crossorigin="anonymous"
+                         class="thumbnail small" />
+
+                    <img data-bind="attr: {src: large},
+                                    click: toggle,
+                                    css: {active: isActive(), loaded: isLoaded()},
+                                    event: {load: load}"
+                         src=""
+                         crossorigin="anonymous"
+                         class="thumbnail large" />
+                  </div>
+                <!-- /ko -->
+              </div>
+            </div>
           </div>
-        </div>
+        </div> <!-- /Inputs -->
+
+        <!-- Canvas -->
+        <div class="col col-lg-8 col-12 container">
+          <!-- Save Container -->
+          <div class="container">
+            <div class="row" data-bind="visible: images().length > 0">
+
+                <!-- Width / Height-->
+                <div class="col-lg-4 offset-lg-0 col-5 offset-1">
+                  <label> Width </label>
+                  <input data-bind="value: width"
+                         text="text"
+                         class="inputWidth" />
+                </div>
+
+                <div class="col-lg-4 col-5">
+                  <label> Height </label>
+                  <input data-bind="value: height"
+                         text="text"
+                         class="inputHeight" />
+                </div>
+
+                <!-- Save-->
+                  <button data-bind="click: save"
+                          class="col-lg-4 offset-lg-0 col-10 offset-1 btn btn-success">
+                    <i class="icon ion-ios-cloud-download-outline"></i>
+                  </button>
+            </div>
+          </div> <!-- /Save container -->
+
+          <hr/>
+
+          <div class="col">
+            <canvas data-bind="attr: {width: width(), height: height() }"
+                    id="canvas"
+                    class="figure-img img-fluid rounded"
+                    width="600"
+                    height="800"></canvas>
+          </div>
+        </div> <!-- /Canvas -->
+
       </div>
 
     </div> <!-- /container -->

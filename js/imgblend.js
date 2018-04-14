@@ -36,37 +36,60 @@ const Canvas = (function() {
                 canvasNode.height
             );
         });
-    }
-    return { redraw }
+    };
+
+    this.dataURL = function() {
+        // From https://stackoverflow.com/a/35783382
+        // Set data URL type to octet-stream, ensures 'download' prompt instead of just viewing the image.
+        return canvasNode.toDataURL("image/png").replace("image/png", "image/octet-stream");
+    };
+
+    document.addEventListener('resize', function() {
+        console.log('redrawing: resize')
+        setTimeout(that.redraw, 250);
+    });
+
+    return { redraw: redraw, dataURL: dataURL }
 })();
 
 function ImageBlend() {
     const that = this;
 
-    this.page = ko.observable(1);
+    /* Color Picker */
+    this.colors = ko.observableArray([
+        { 'code': "#0000", 'id': null, 'text': 'all colors', 'rainbow': true },
+        { 'code': "#ff2000", 'id': "0",  'text': 'red' },
+        { 'code': "#a24615", 'id': "1",  'text': 'copper' },
+        { 'code': "#ff7c00", 'id': "2",  'text': 'orange' },
+        { 'code': "#ffcf00", 'id': "3",  'text': 'candle' },
+        { 'code': "#fffa00", 'id': "4",  'text': 'yellow' },
+        { 'code': "#90e200", 'id': "5",  'text': 'chartreuse' },
+        { 'code': "#00ab00", 'id': "6",  'text': 'green' },
+        { 'code': "#00b2d4", 'id': "7",  'text': 'teal' },
+        { 'code': "#0062c6", 'id': "8",  'text': 'blue' },
+        { 'code': "#8c20ba", 'id': "9",  'text': 'violet' },
+        { 'code': "#f52394", 'id': "a",  'text': 'pink' },
+        { 'code': "#ff9f9c", 'id': "b",  'text': 'salmon' },
+        { 'code': "#ffffff", 'id': "c",  'text': 'white' },
+        { 'code': "#7c7c7c", 'id': "d",  'text': 'grey' },
+        { 'code': "#000000", 'id': "e",  'text': 'black' },
+    ]);
+    this.currentColor = ko.observable(this.colors()[0]);
 
-    this.images = ko.observableArray([]);
-    this.images.extend({ rateLimit: 100 }); // Delay up to 100ms
-
-    this.removeImage = function(selectedItem) {
-        this.images.remove(function(item) {
-            return item.thumb() === selectedItem.thumb();
-        });
-        setTimeout(Canvas.redraw, 200);
+    this.setColor = function(selectedColor) {
+        that.resetSearch();
+        that.currentColor(selectedColor);
     };
 
-    this.isSearchLoading = ko.observable(false);
-
+    /* Search; Variables */
     this.searchTags = ko.observable('desert');
     this.searchErrorMessage = ko.observable(false);
+    this.isSearchLoading = ko.observable(false);
+    this.searchPageNumber = ko.observable(1);
 
-    this.nextPage = function() {
-        that.page(that.page() + 1);
-        that.search();
-    };
-
+    /* Search; Functions */
     this.resetSearch = function() {
-        that.page(1);
+        that.searchPageNumber(1);
         that.images.removeAll();
     };
 
@@ -76,13 +99,13 @@ function ImageBlend() {
         getJson({
             method: 'search',
             tags: that.searchTags(),
-            page: that.page(),
-            color_codes: that.currentColorId
+            page: that.searchPageNumber(),
+            color_codes: that.currentColor().id
         }).then(function(response) {
             that.isSearchLoading(false);
             console.log('response from search:', response);
             response.forEach(function(image) {
-                that.images.push(new Image(image));
+                that.images.splice(0, 0, new Image(image));
             });
         }).catch(function(response) {
             that.isSearchLoading(false);
@@ -104,29 +127,81 @@ function ImageBlend() {
         return true;
     };
 
-    this.colors = ko.observableArray([
-        { 'code': "#0000", 'id': null, 'text': 'all colors', 'rainbow': true },
-        { 'code': "#ff2000", 'id': "0",  'text': 'red' },
-        { 'code': "#a24615", 'id': "1",  'text': 'copper' },
-        { 'code': "#ff7c00", 'id': "2",  'text': 'orange' },
-        { 'code': "#ffcf00", 'id': "3",  'text': 'candle' },
-        { 'code': "#fffa00", 'id': "4",  'text': 'yellow' },
-        { 'code': "#90e200", 'id': "5",  'text': 'chartreuse' },
-        { 'code': "#00ab00", 'id': "6",  'text': 'green' },
-        { 'code': "#00b2d4", 'id': "7",  'text': 'teal' },
-        { 'code': "#0062c6", 'id': "8",  'text': 'blue' },
-        { 'code': "#8c20ba", 'id': "9",  'text': 'violet' },
-        { 'code': "#f52394", 'id': "a",  'text': 'pink' },
-        { 'code': "#ff9f9c", 'id': "b",  'text': 'salmon' },
-        { 'code': "#ffffff", 'id': "c",  'text': 'white' },
-        { 'code': "#7c7c7c", 'id': "d",  'text': 'grey' },
-        { 'code': "#000000", 'id': "e",  'text': 'black' },
-    ]);
+    this.nextPage = function() {
+        that.searchPageNumber(that.searchPageNumber() + 1);
+        that.search();
+    };
 
-    this.currentColor = ko.observable(this.colors()[0]);
-    this.setColor = function(selectedColor) {
-        that.resetSearch();
-        that.currentColor(selectedColor);
+    /* Search Results */
+    this.images = ko.observableArray([]);
+    this.images.extend({ rateLimit: 100 }); // Delay up to 100ms
+
+    this.removeImage = function(selectedItem) {
+        this.images.remove(function(item) {
+            return item.thumb() === selectedItem.thumb();
+        });
+        setTimeout(Canvas.redraw, 200);
+    };
+
+    this.selectAll = function() {
+        that.images().forEach(function(image) {
+            image.isActive(true);
+        });
+        Canvas.redraw();
+    };
+
+    this.selectNone = function() {
+        that.images().forEach(function(image) {
+            image.isActive(false);
+        });
+        Canvas.redraw();
+    };
+
+    function stripSpace(txt) {
+        if (txt && txt.replace) {
+            return txt.replace(/\s*/g, '');
+        }
+        return txt;
+    }
+
+
+    /* Blended Image */
+    this.width = ko.observable(800);
+    this.height = ko.observable(800);
+
+    this.width.subscribe(function(newValue) {
+        console.log('redrawing: height');
+        setTimeout(Canvas.redraw, 250);
+    });
+    this.height.subscribe(function(newValue) {
+        console.log('redrawing: height');
+        setTimeout(Canvas.redraw, 250);
+    });
+
+    this.save = function(context, event) {
+        const activeImageCount = that.images().filter(function(image) {
+            return image.isActive;
+        }).length;
+
+        var imageDataLink = document.createElement('a');
+        document.body.appendChild(imageDataLink);
+
+        // File name
+        imageDataLink.download = 'imgblend-' +
+                         stripSpace(that.searchTags()) +
+                         '-(' + stripSpace(that.currentColor().text) + ')' +
+                         '-(' + activeImageCount + 'images)' +
+                         '.png';
+
+        // From https://stackoverflow.com/a/35783382
+        // Set data URL type to octet-stream, ensures 'download' prompt instead of just viewing the image.
+        var dataUrl = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+        imageDataLink.href = dataUrl;
+
+        // Emulate anchor click
+        imageDataLink.click(event);
+
+        document.body.removeChild(imageDataLink);
     };
 }
 
