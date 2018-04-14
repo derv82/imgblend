@@ -31,9 +31,13 @@
           <div class="input-group mb-3">
             <div class="dropdown">
               <div class="input-group-prepend">
-                <button data-bind="style: {backgroundColor: currentColorCode()},
+                <button data-bind="style: {
+                                     backgroundColor: currentColor().code,
+                                     borderColor: currentColor().code,
+                                   },
+                                   css: { rainbow: currentColor().rainbow },
                                    disable: isSearchLoading"
-                        class="btn btn-secondary dropdown-toggle colorPicker"
+                        class="colorPicker btn btn-secondary dropdown-toggle"
                         type="button"
                         id="dropdownMenuButton"
                         data-toggle="dropdown"
@@ -43,10 +47,14 @@
                 </button>
                 <div class="dropdown-menu colorMenu" aria-labelledby="dropdownMenuButton">
                   <!-- ko foreach: colors -->
-                  <a data-bind="style: {backgroundColor: code},
-                                  attr: {id: id},
-                                  click: $parent.setColor,
-                                  text: text"
+                  <a data-bind="style: {
+                                  backgroundColor: code,
+                                  borderColor: code,
+                                },
+                                css: { rainbow: $data.rainbow },
+                                attr: {id: id},
+                                click: $parent.setColor,
+                                text: text"
                      class="dropdown-item colorOption"
                      href="#"></a>
                   <!-- /ko -->

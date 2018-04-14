@@ -105,7 +105,7 @@ function ImageBlend() {
     };
 
     this.colors = ko.observableArray([
-        { 'code': "#333333", 'id': null, 'text': 'all colors' },
+        { 'code': "#0000", 'id': null, 'text': 'all colors', 'rainbow': true },
         { 'code': "#ff2000", 'id': "0",  'text': 'red' },
         { 'code': "#a24615", 'id': "1",  'text': 'copper' },
         { 'code': "#ff7c00", 'id': "2",  'text': 'orange' },
@@ -123,12 +123,10 @@ function ImageBlend() {
         { 'code': "#000000", 'id': "e",  'text': 'black' },
     ]);
 
-    this.currentColorCode = ko.observable('transparent');
-    this.currentColorId = ko.observable(null);
+    this.currentColor = ko.observable(this.colors()[0]);
     this.setColor = function(selectedColor) {
         that.resetSearch();
-        that.currentColorCode(selectedColor.code);
-        that.currentColorId(selectedColor.id);
+        that.currentColor(selectedColor);
     };
 }
 
