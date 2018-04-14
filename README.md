@@ -41,5 +41,9 @@ See requirements.txt -- depends on the [flickr_api](https://github.com/alexis-mi
 Setup/Install
 -------------
 
-1. `python server.py` to launch a server on localhost on port `8000`.
-2. Visit http://localhost:8000/ in your browser.
+1. You need [Flickr API keys](https://www.flickr.com/services/api/keys/), create an account & application.
+   * Store the API "key" and "secret" in a file `flickr_credentials.txt` in the root directory
+   * First line of the .txt is the API Key
+   * Second line of the .txt is the API Secret
+2. `python server.py` to launch a server on localhost on port `8000`.
+3. Visit http://localhost:8000/ in your browser.
