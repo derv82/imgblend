@@ -15,8 +15,18 @@ PREFERRED_SIZES = [
 
 
 def get_api_key_and_secret():
-    cred_path = 'flickr_credentials.txt'
-    if not os.path.exists(cred_path):
+    # Find path to credentials, moving up through parent directories
+    cred_path = None
+    this_path = os.path.abspath('.')
+    last_path = None
+    while this_path != last_path:
+        last_path = this_path
+        if os.path.exists('flickr_credentials.txt'):
+            cred_path = os.path.join(this_path, 'flickr_credentials.txt')
+            break
+        this_path = os.path.abspath(os.path.join(this_path, '..'))
+
+    if cred_path is None:
         raise Exception('Required flickr_credentials.txt not found')
 
     with open(cred_path, 'r') as f:
