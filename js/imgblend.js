@@ -1,5 +1,5 @@
 function Image(searchResult) {
-    const thatImage = this;
+    var thatImage = this;
     this.thumb = ko.observable(searchResult.thumb);
     this.large = ko.observable(searchResult.large);
     this.isActive = ko.observable(false);
@@ -17,25 +17,33 @@ function Image(searchResult) {
     };
 }
 
-const Canvas = (function() {
-    const that = this;
-    const canvasNode = document.querySelector('#canvas');
-    const canvasContext = canvasNode.getContext('2d');
+var Canvas = (function() {
+    var that = this;
+    var canvasNode = document.querySelector('#canvas');
+    var canvasContext = canvasNode.getContext('2d');
 
-    this.redraw = function(images) {
+    this.redraw = function() {
         canvasContext.globalAlpha = 1.0;
-        canvasContext.clearRect(0, 0, canvasNode.width, canvasNode.height);
+        canvasContext.fillStyle = app.currentColor().code;
+        canvasContext.fillRect(0, 0, canvasNode.width, canvasNode.height);
 
-        const activeThumbs = document.querySelectorAll('.thumbnail.large.loaded.active')
-        canvasContext.globalAlpha = 1 / activeThumbs.length * 1.2;
-        activeThumbs.forEach(function(imageNode) {
+        var activeThumbs = document.querySelectorAll('.thumbnail.large.loaded.active')
+        var index;
+        for (index = activeThumbs.length - 1; index >= 0; index--) {
+            imageNode = activeThumbs[index];
+            //canvasContext.globalAlpha = (activeThumbs.length - index) / activeThumbs.length * app.opacity();
+            canvasContext.globalAlpha = (1 / activeThumbs.length) * app.opacity();
             canvasContext.drawImage(
                 imageNode,
                 0, 0, // top, left
                 canvasNode.width,
                 canvasNode.height
             );
-        });
+        }
+    };
+
+    this.redrawWait = function(waitMs) {
+        setTimeout(that.redraw, waitMs || 100);
     };
 
     this.dataURL = function() {
@@ -44,16 +52,15 @@ const Canvas = (function() {
         return canvasNode.toDataURL("image/png").replace("image/png", "image/octet-stream");
     };
 
-    document.addEventListener('resize', function() {
-        console.log('redrawing: resize')
-        setTimeout(that.redraw, 250);
-    });
-
-    return { redraw: redraw, dataURL: dataURL }
+    return {
+        redraw: redraw,
+        redrawWait: redrawWait,
+        dataURL: dataURL
+    }
 })();
 
 function ImageBlend() {
-    const that = this;
+    var that = this;
 
     /* Color Picker */
     this.colors = ko.observableArray([
@@ -74,7 +81,7 @@ function ImageBlend() {
         { 'code': "#7c7c7c", 'id': "d",  'text': 'grey' },
         { 'code': "#000000", 'id': "e",  'text': 'black' },
     ]);
-    this.currentColor = ko.observable(this.colors()[0]);
+    this.currentColor = ko.observable(this.colors()[3]);
 
     this.setColor = function(selectedColor) {
         that.resetSearch();
@@ -88,6 +95,10 @@ function ImageBlend() {
     this.searchPageNumber = ko.observable(1);
 
     /* Search; Functions */
+    this.searchTags.subscribe(function() {
+        // Clear images when search text changes
+        that.resetSearch();
+    });
     this.resetSearch = function() {
         that.searchPageNumber(1);
         that.images.removeAll();
@@ -103,7 +114,9 @@ function ImageBlend() {
             color_codes: that.currentColor().id
         }).then(function(response) {
             that.isSearchLoading(false);
-            console.log('response from search:', response);
+            if (!response.length) {
+              throw Error('Got 0 results when searching for ' + that.searchTags());
+            }
             response.forEach(function(image) {
                 that.images.splice(0, 0, new Image(image));
             });
@@ -140,7 +153,7 @@ function ImageBlend() {
         this.images.remove(function(item) {
             return item.thumb() === selectedItem.thumb();
         });
-        setTimeout(Canvas.redraw, 200);
+        Canvas.redrawWait(200);
     };
 
     this.selectAll = function() {
@@ -166,20 +179,22 @@ function ImageBlend() {
 
 
     /* Blended Image */
+    this.opacity = ko.observable(0.8);
     this.width = ko.observable(800);
     this.height = ko.observable(800);
 
+    this.opacity.subscribe(function(newValue) {
+        Canvas.redrawWait(100);
+    });
     this.width.subscribe(function(newValue) {
-        console.log('redrawing: height');
-        setTimeout(Canvas.redraw, 250);
+        Canvas.redrawWait(100);
     });
     this.height.subscribe(function(newValue) {
-        console.log('redrawing: height');
-        setTimeout(Canvas.redraw, 250);
+        Canvas.redrawWait(100);
     });
 
     this.save = function(context, event) {
-        const activeImageCount = that.images().filter(function(image) {
+        var activeImageCount = that.images().filter(function(image) {
             return image.isActive;
         }).length;
 
@@ -205,20 +220,20 @@ function ImageBlend() {
     };
 }
 
-const app = new ImageBlend();
+var app = new ImageBlend();
 ko.applyBindings(app, document.querySelector('#app'));
 
 function getJson(params) {
     return new Promise(function(resolve, reject) {
-        const url = 'cgi-bin/imgblend.py?' + $.param(params)
-        const request = new XMLHttpRequest();
+        var url = 'cgi-bin/imgblend.py?' + $.param(params)
+        var request = new XMLHttpRequest();
         request.addEventListener('error',  function(e) {
             console.log('Error while calling ' + url, e);
             reject('Error while calling ' + url);
         });
         request.addEventListener('load', function(e) {
             try {
-                const jsonResult = JSON.parse(request.response);
+                var jsonResult = JSON.parse(request.response);
                 if (jsonResult.error && jsonResult.trace) {
                     reject(jsonResult);
                 } else {
@@ -233,3 +248,21 @@ function getJson(params) {
         request.send();
    });
 }
+
+$('#opacitySlider')
+  .slider({
+    precision: 1,
+    min: 0.1,
+    max: 2.0,
+    step: 0.1,
+    value: 0.8,
+    formatter: function(value) {
+      return 'Opacity: ' + value;
+    }
+  })
+  .on('slide', function(e) {
+    var newOpacity = e.value;
+    if (app.opacity() !== newOpacity) {
+        app.opacity(newOpacity);
+    }
+});

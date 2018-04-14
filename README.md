@@ -26,16 +26,6 @@ Searching for `amanita muscaria` (a type of mushroom) with the *Red* color code:
 ------------
 
 
-TODO
-----
-
-* Ability to save images (!).
-* Ability to specify opacity ratio.
-* More user-friendly UI:
-   * Show when a search / image will be wiped out
-   * Load images from the top, so users don't have to scroll down, click images, then scroll up to see the result.
-
-
 Why?
 ----
 Because I was bored and wanted to learn how to create a project in PyCharm.

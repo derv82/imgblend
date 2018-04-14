@@ -189,6 +189,8 @@ button.colorPicker::after {
     100%{background-position:0% 82%}
 }
 
-.inputWidth.form-control, .inputHeight.form-control {
-    width: 80px !important;
+.alert-danger {
+    background-color: #800 !important;
+    color: #fff !important;
+    border: solid 1px #a00a !important;
 }

@@ -1,18 +1,34 @@
 #!/usr/bin/python
 
+import os
 import flickr_api
 import multiprocessing.pool
 
-# Flickr Constants
 API_PIPELINE_DEPTH = 5  # Max requests per second
-BQJ_LFZ = '1ba80a0b72b68f135d995f7b8e506092'  # Nothing to see here
-BQJ_TFDSFU = '07a822ea82c52db6'  # Or here.
 
+# When fetching the "large" version of an image, try to extract these sizes (in order):
 PREFERRED_SIZES = [
     'Large',
     'Original',
     'Medium'
 ]
+
+
+def get_api_key_and_secret():
+    cred_path = 'flickr_credentials.txt'
+    if not os.path.exists(cred_path):
+        raise Exception('Required flickr_credentials.txt not found')
+
+    with open(cred_path, 'r') as f:
+        raw_cred = f.read()
+        lines = raw_cred.split('\n')
+        if len(lines) < 2:
+            # Line 1: API Key
+            # Line 2: API Secret
+            raise Exception('flickr_credentials must contain API KEY and API SECRET on separate lines')
+        api_key = lines[0].strip()
+        api_secret = lines[1].strip()
+        return api_key, api_secret
 
 
 def search(tags=None, page=1, **kwargs):
@@ -44,7 +60,8 @@ def search(tags=None, page=1, **kwargs):
     if 'color_codes' in kwargs and kwargs.get('color_codes') is None:
         kwargs.pop('color_codes')
 
-    flickr_api.set_keys(api_key=BQJ_LFZ, api_secret=BQJ_TFDSFU)
+    api_key, api_secret = get_api_key_and_secret()
+    flickr_api.set_keys(api_key=api_key, api_secret=api_secret)
 
     pool = multiprocessing.pool.ThreadPool(processes=API_PIPELINE_DEPTH)
     threads = []

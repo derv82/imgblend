@@ -6,6 +6,7 @@
   <meta charset="UTF-8">
   <link rel="stylesheet" href="css/imgblend.css">
   <link rel="stylesheet" href="css/vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="css/vendor/bootstrap-slider.min.css">
   <link rel="stylesheet" href="css/vendor/ionicons.min.css">
   <link rel="icon" type="image/png" href="/favicon.png">
 </head>
@@ -14,6 +15,12 @@
   <div>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <a class="navbar-brand" href="#">imgBlend</a>
+
+      <span class="navbar-text">
+        <a href="https://github.com/derv82/imgblend">
+          <i class="icon ion-social-github"></i>
+        </a>
+      </span>
     </nav>
 
     <br/>
@@ -147,6 +154,16 @@
 
         <!-- Canvas -->
         <div class="col col-lg-8 col-12 container">
+          <!-- Controls -->
+          <div class="container">
+            <label for="opacitySlider">Transparency:</label>
+            <input id="opacitySlider" type="text" />
+            <span data-bind="text: opacity"></span>
+          </div>
+
+          <hr/>
+
+          <div class="container">
           <!-- Actual canvas -->
           <div class="col">
             <canvas data-bind="attr: {width: width(), height: height() }"
@@ -208,6 +225,7 @@
   <script src="js/vendor/jquery-3.3.1.min.js"></script>
   <script src="js/vendor/popper.min.js"></script>
   <script src="js/vendor/bootstrap.min.js"></script>
+  <script src="js/vendor/bootstrap-slider.min.js"></script>
   <script src="js/vendor/knockout.min.js"></script>
   <script type="text/javascript" src="js/imgblend.js"></script>
 </body>
