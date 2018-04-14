@@ -21,9 +21,10 @@ def get_api_key_and_secret():
     last_path = None
     while this_path != last_path:
         last_path = this_path
-        if os.path.exists('flickr_credentials.txt'):
-            cred_path = os.path.join(this_path, 'flickr_credentials.txt')
+        cred_path = os.path.join(this_path, 'flickr_credentials.txt')
+        if os.path.exists(cred_path):
             break
+        cred_path = None
         this_path = os.path.abspath(os.path.join(this_path, '..'))
 
     if cred_path is None:
