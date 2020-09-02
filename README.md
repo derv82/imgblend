@@ -15,13 +15,13 @@ Screenshots
 
 Searching for `forest` with the *Chartreuse* color code:
 
-![Forest Search](https://i.imgur.com/tmixyvX.jpg?1)
+![Forest Search](https://blen.derv.us/images/imgblend-forest.jpg)
 
 ------------
 
 Searching for `amanita muscaria` (a type of mushroom) with the *Red* color code:
 
-![Amanita Muscaria Search](https://i.imgur.com/KlmPnCc.jpg?1)
+![Amanita Muscaria Search](https://blen.derv.us/images/imgblend-amanitamuscaria..jpg)
 
 ------------
 
