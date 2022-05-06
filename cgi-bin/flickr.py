@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
 import os
-import flickr_api
 import multiprocessing.pool
+import flickr_api
 
 API_PIPELINE_DEPTH = 5  # Max requests per second
 
